@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
+
+<!-- Head Libs -->
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>Dragons Return!</title>
+  </head>
+  <style>
+  h1{
+    font-style: oblique;
+    color: white;
+    margin-left: 3%; 
+  }
+  .progress{
+    margin-top: -7%;
+    margin-left: 5%;
+    margin-right: 10%;
+  }
+  body{
+    background-image: url("wall.jpg");
+  }
+  .block-white{
+    margin-top: 45%;
+    background: white;
+    height: 135px;
+    width: 100%;
+    opacity: 0.1;
+    filter: alpha(opacity=10)
+  }
+  .block-news{
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-left: 10%;
+    background: white;
+    height: 300px;
+    width: 80%;
+    opacity: 0.7;
+    filter: alpha(opacity=70)
+  }
+  .play-button{
+    margin-top: -47%;
+    margin-left: 85%;
+  }
+  .info-news{
+    padding: 5%;
+    text-align: center;
+  }
+  #myProgress {
+
+    width: 100%;
+    background-color: #ddd;
+  }
+
+  #myBar {
+    margin-top: -1%;
+    width: 0%;
+    height: 30px;
+    background-color: #4c7daf;
+  }
+
+  #label {
+    text-align: center;
+    line-height: 30px;
+    color: white;
+  }
+  </style>
+  <body>
+  <div class="button-bar" ><button onclick="move()" hidden="hidden">Click Me</button> </div>
+    <h1>Dragons Return</h1>
+    <div class="block-news"><div class="info-news"></div></div>
+    <div class="menu-play">
+    <div class="play-button"><button  id="idplay-button" type="button" onclick="play()" class="btn btn-success btn-lg" disabled>Jugar</button></div>
+      <div class="block-white"></div>
+      <div class="progress">
+        <div id="myProgress">
+          <div id="myBar">
+            <div id="label">0%</div>
+          </div>
+        </div>
+      </div> 
+      
+    </div>
+
+  </body>
+
+  <script>  
+  var simpleGit = require('simple-git');
+  var exec = require('child_process').exec;
+      function load(){
+        require('simple-git')()
+         .pull(function(err, update) {
+            if(update) {
+               move();
+               document.getElementById("idplay-button").disabled = false;
+            }else{
+              alert(err);
+            }
+          })
+        };
+
+      function news(){
+        $.ajax({
+          url: 'http://54.94.196.205:3000/news',
+          type: "GET",
+          success: function(result) {
+          console.log(result);
+            $('div.info-news').html(result);
+          }
+    
+        })
+     }
+
+      function play(){
+       exec('play.exe', (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.log(`stderr: ${stderr}`);
+        });
+        //window.close();
+      }
+
+    function move() {
+    var elem = document.getElementById("myBar");   
+    var width = 0;
+    var id = setInterval(frame, 20);
+    function frame() {
+      if (width >= 100) {
+        clearInterval(id);
+      } else {
+        width++; 
+        elem.style.width = width + '%'; 
+        document.getElementById("label").innerHTML = width * 1  + '%';
+      }
+    }
+  }
+  news();
+  load();
+    // You can also require other files to run in this process
+    require('./renderer.js')
+  </script>
+</html>
